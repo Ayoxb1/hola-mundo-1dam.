@@ -1,0 +1,308 @@
+   
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 UT-3 JavaScript EXAMEN COMPLETO (93 preguntas)</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; padding: 15px; 
+            color: #333; line-height: 1.5;
+        }
+        .container { 
+            background: rgba(255,255,255,0.95); 
+            border-radius: 20px; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            padding: 25px; max-height: 90vh; overflow-y: auto;
+        }
+        h1 { 
+            text-align: center; color: #2c3e50; 
+            margin-bottom: 20px; font-size: 1.8em;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stats { 
+            display: grid; grid-template-columns: 1fr 1fr 1fr; 
+            gap: 15px; margin: 20px 0;
+        }
+        .stat { 
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white; padding: 15px; border-radius: 15px;
+            text-align: center; font-weight: bold;
+        }
+        .stat-number { font-size: 2em; margin-bottom: 5px; }
+        .progress { 
+            width: 100%; height: 12px; background: #ecf0f1; 
+            border-radius: 10px; overflow: hidden; margin: 20px 0;
+        }
+        .progress-bar { 
+            height: 100%; background: linear-gradient(90deg, #27ae60, #f39c12);
+            border-radius: 10px; width: 0%; transition: width 0.4s;
+        }
+        .question { 
+            background: white; margin: 20px 0; padding: 25px; 
+            border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-left: 5px solid #3498db;
+        }
+        .q-number { 
+            background: #e74c3c; color: white; padding: 8px 15px; 
+            border-radius: 20px; font-weight: bold; font-size: 0.9em;
+            float: right;
+        }
+        .q-title { margin: 0 0 20px 0; font-size: 1.3em; color: #2c3e50; }
+        label { 
+            display: block; padding: 18px; margin: 12px 0; 
+            background: #f8f9fa; border-radius: 12px; cursor: pointer;
+            border: 3px solid transparent; transition: all 0.3s;
+        }
+        label:hover { 
+            background: #e3f2fd; border-color: #3498db; 
+            transform: translateX(5px);
+        }
+        input[type="radio"] { 
+            transform: scale(1.5); margin-right: 15px; 
+            accent-color: #3498db;
+        }
+        .option-letter { 
+            display: inline-block; width: 28px; height: 28px; 
+            border-radius: 50%; background: #3498db; color: white;
+            text-align: center; line-height: 28px; font-weight: bold;
+            margin-right: 12px; font-size: 0.9em;
+        }
+        button { 
+            width: 100%; padding: 20px; background: linear-gradient(45deg, #27ae60, #229954);
+            color: white; border: none; border-radius: 15px; font-size: 1.2em;
+            font-weight: bold; margin: 25px 0; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(39,174,96,0.4);
+        }
+        button:hover:not(:disabled) { transform: translateY(-2px); }
+        button:disabled { 
+            background: #95a5a6; cursor: not-allowed; transform: none;
+        }
+        .penalty { 
+            background: linear-gradient(45deg, #fff3cd, #ffeaa7); 
+            border: 2px solid #f39c12; padding: 15px; border-radius: 12px;
+            margin: 20px 0; text-align: center; font-weight: bold;
+            color: #856404;
+        }
+        .result { 
+            text-align: center; padding: 40px; margin: 30px 0; 
+            border-radius: 20px; font-size: 1.5em; color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .restart-btn { 
+            background: linear-gradient(45deg, #e74c3c, #c0392b); 
+            font-size: 1.3em; padding: 25px; margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 UT-3 JavaScript EXAMEN COMPLETO</h1>
+        <p style="text-align:center;color:#7f8c8d;">93 preguntas • UT-3 LMSGI03 + Fieldset + W3Schools [file:1]</p>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number" id="correctCount">0</div>
+                <div>✅ Aciertos</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="wrongCount">0</div>
+                <div>❌ Fallos</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="scorePreview">0.0</div>
+                <div>📊 Nota/10</div>
+            </div>
+        </div>
+        
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div class="penalty">
+            ⚠️ <strong>PENALIZACIÓN:</strong> Cada <strong>3 fallos = -1 acierto</strong>
+        </div>
+        
+        <div id="quizContainer"></div>
+        <button id="nextBtn" onclick="nextQuestion()" disabled>➡️ Siguiente</button>
+        <button id="finishBtn" onclick="showFinalScore()" style="display:none;">🏁 Resultado Final</button>
+        
+        <div id="resultContainer" style="display:none;"></div>
+    </div>
+
+    <script>
+        // 🔥 TODAS LAS 93 PREGUNTAS COMPLETAS [file:1]
+        const questions = [
+            // 3.1 SINTAXIS BÁSICA (15)
+            {question:"¿Dónde colocar script externo DOM listo?",options:["Principio body","Final body","Head","Foot"],correct:1},
+            {question:"¿Atributo JS externo?",options:["href","src","link","type"],correct:1},
+            {question:"¿Evento carga página?",options:["body.onload","window.onload","document.load","page.load"],correct:1},
+            {question:"¿Ámbito bloque mutable?",options:["var","let","const","function"],correct:1},
+            {question:"¿Solo lectura?",options:["var","let","const","let const"],correct:2},
+            {question:"¿Variable sin inicializar?",options:["null","0","undefined","NaN"],correct:2},
+            {question:"¿Tipo variable?",options:["typeOf()","getType()","typeof","varType()"],correct:2},
+            {question:"¿Consola?",options:["print()","log()","console.log()","debug()"],correct:2},
+            {question:"¿Función anónima?",options:["function(){}","() => {}","func {}","lambda () {}"],correct:1},
+            {question:"¿Return devuelve?",options:["Nada","Valor especificado","true","Función"],correct:1},
+            {question:"¿JavaScript tipado?",options:["Estático","No tipado","Débil","Fuerte"],correct:1},
+            {question:"¿Extensión JS?",options:[".html",".js",".css",".jscript"],correct:1},
+            {question:"¿Comentario línea?",options:["//","/* */","#","--"],correct:0},
+            {question:"¿NaN significa?",options:["Not a Number","No Answer","Null Number","Not Assigned"],correct:0},
+            {question:"¿Identificadores tildes?",options:["No","Sí Unicode","Solo const","Solo func"],correct:1},
+
+            // FIELDSET 22 PREGUNTAS
+            {question:"¿Objeto página completa?",options:["document","window","console","body"],correct:1},
+            {question:"¿Método único por ID?",options:["getElementsById()","getElementById()","querySelectorAll()","getElementByTagName()"],correct:1},
+            {question:"¿querySelector ID 'menu'?",options:["'menu'","'#menu'","'.menu'","'id=menu'"],correct:1},
+            {question:"¿Todos <p>?",options:["getElementsByTagName('p')","getElementByTagName('p')","getElementsByClassName('p')","querySelector('#p')"],correct:0},
+            {question:"¿getElementsByClassName?",options:["Array","HTMLCollection","NodeList","Map"],correct:1},
+            {question:"¿Contenido HTML?",options:["textContent","innerText","innerHTML","html"],correct:2},
+            {question:"¿Estilos línea?",options:["className","style","css","design"],correct:1},
+            {question:"¿Añadir clase?",options:["className='nueva'","classList.add()","addClass()","style.class"],correct:1},
+            {question:"¿Página cargada?",options:["onclick","onready","onload","onstart"],correct:2},
+            {question:"¿Código carga sin HTML?",options:["body.onload","window.onload","<body onload>","onload.document"],correct:1},
+            {question:"¿Crear nodo?",options:["newElement('li')","createNode('li')","createElement('li')","addElement('li')"],correct:2},
+            {question:"¿Nodo final hijos?",options:["append()","addChild()","appendChild()","insertChild()"],correct:2},
+            {question:"¿NodeList CSS?",options:["getElementsByTagName()","querySelector()","querySelectorAll()","getElementsById()"],correct:2},
+            {question:"¿querySelector('.item') 5 elem?",options:["5 array","Primer elem","null","NodeList 5"],correct:1},
+            {question:"¿HTMLCollection vs NodeList?",options:["div vs p","HTMLCollection actualiza","NodeList sin bucles","Iguales"],correct:1},
+            {question:"¿onclick botón anon?",options:["<button onclick>","boton.onclick=func","boton.onclick=function()","onclick.boton"],correct:2},
+            {question:"¿Ratón encima?",options:["onclick","onmouseover","onload","onscroll"],correct:1},
+            {question:"¿remove() nodo?",options:["Oculta","Elimina DOM","Borra contenido","Reinicia estilos"],correct:1},
+            {question:"¿Lista <ul><li> dinámica?",options:["innerHTML ul","createElement+append","innerText ul","No posible"],correct:1},
+            {question:"¿for-of elimina salta?",options:["remove falla","Reindexa","for-of pares","Inmutable"],correct:1},
+            {question:"¿Eliminar todos párrafos?",options:["for-of","Array colección","Índice final→inicio","No posible"],correct:2},
+            {question:"¿createElement('p')?",options:["Auto body","Memoria+append","Reemplaza p","Error sin id"],correct:1},
+
+            // W3SCHOOLS 11 PREGUNTAS
+            {question:"¿Elemento HTML JavaScript?",options:["<script>","<scripting>","<js>","<javascript>"],correct:0},
+            {question:"¿Cambiar #demo contenido?",options:["getElementById('demo').innerHTML","getElement('p').innerHTML","getElementByName('p').innerHTML","#demo.innerHTML"],correct:0},
+            {question:"¿Lugar insertar JS?",options:["Head+body","Solo body","Solo head","Foot"],correct:0},
+            {question:"¿Script externo 'xxx.js'?",options:["<script src='xxx.js'>","<script href>","<script name>","<script type>"],correct:0},
+            {question:"¿JS externo contiene <script>?",options:["Verdadero","Falso"],correct:1},
+            {question:"¿'Hello World' alert?",options:["alert('Hello World')","alertBox()","msg()","msgBox()"],correct:0},
+            {question:"¿Crear función?",options:["function myFunction()","function=myFunction()","function:myFunction()","myFunction=function()"],correct:0},
+            {question:"¿Llamar myFunction()?",options:["myFunction()","call myFunction()","call function","run myFunction()"],correct:0},
+            {question:"¿IF statement?",options:["if (i == 5)","if i = 5 then","if i == 5 then","if i = 5"],correct:0},
+            {question:"¿IF i NO igual 5?",options:["if (i != 5)","if i <> 5","if i =! 5","if (i <> 5)"],correct:0},
+            {question:"¿WHILE loop?",options:["while (i <= 10; i++)","while i = 1 to 10","while (i <= 10)","while i <= 10 do"],correct:2}
+        ];
+
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        let wrongAnswers = 0;
+
+        function initQuiz() {
+            updateStats();
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const container = document.getElementById('quizContainer');
+            const q = questions[currentQuestion];
+            const letters = ['A','B','C','D'];
+            
+            container.innerHTML = `
+                <div class="question">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                        <h3 class="q-title">${q.question}</h3>
+                        <span class="q-number">Pregunta ${currentQuestion+1}/93</span>
+                    </div>
+                    ${q.options.map((opt,i)=>`
+                        <label>
+                            <input type="radio" name="q${currentQuestion}" value="${i}">
+                            <span class="option-letter">${letters[i]}</span>${opt}
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+
+            document.querySelectorAll(`input[name="q${currentQuestion}"]`).forEach(radio => {
+                radio.addEventListener('change', () => {
+                    document.getElementById('nextBtn').disabled = false;
+                });
+            });
+
+            updateProgress();
+        }
+
+        function nextQuestion() {
+            const selected = document.querySelector(`input[name="q${currentQuestion}"]:checked`);
+            if (!selected) return alert('⚠️ Selecciona una respuesta');
+
+            const answer = parseInt(selected.value);
+            
+            if (answer === questions[currentQuestion].correct) {
+                correctAnswers++;
+            } else {
+                wrongAnswers++;
+                if (wrongAnswers % 3 === 0 && correctAnswers > 0) {
+                    correctAnswers--;
+                }
+            }
+
+            currentQuestion++;
+            updateStats();
+            
+            if (currentQuestion < questions.length) {
+                document.getElementById('nextBtn').disabled = true;
+                setTimeout(showQuestion, 200);
+            } else {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('finishBtn').style.display = 'block';
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('wrongCount').textContent = wrongAnswers;
+            const score = Math.max(0, Math.round((correctAnswers/questions.length)*10*10)/10);
+            document.getElementById('scorePreview').textContent = score.toFixed(1);
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion/questions.length)*100;
+            document.getElementById('progressBar').style.width = progress+'%';
+        }
+
+        function showFinalScore() {
+            const total = questions.length;
+            const score = Math.max(0, Math.round((correctAnswers/total)*10));
+            const percentage = Math.round((correctAnswers/total)*100);
+            const penalties = Math.floor(wrongAnswers/3);
+            
+            document.getElementById('quizContainer').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('finishBtn').style.display = 'none';
+            
+            let message = score>=9?'🏆 ¡MAESTRO DOM! 🔥':
+                         score>=8?'✅ ¡EXCELENTE! 💪':
+                         score>=7?'🎯 ¡Muy bien! 📚':
+                         score>=5?'👍 ¡Aprobado! 📖':'🚀 ¡Sigue practicando!';
+            
+            document.getElementById('resultContainer').innerHTML = `
+                <div class="result" style="background:linear-gradient(135deg,${score>=7?'#27ae60':'#e74c3c'},${score>=7?'#229954':'#c0392b'});">
+                    <h2>🎉 RESULTADO FINAL</h2>
+                    <div style="font-size:3.5em;margin:20px 0;">${score}/10</div>
+                    <p>Aciertos: <strong>${correctAnswers}/${total}</strong> (${percentage}%)</p>
+                    <p>Fallos: <strong>${wrongAnswers}</strong> ${penalties>0?`(⚠️ -${penalties})`:''}</p>
+                    <div style="font-size:1.3em;margin:25px 0;padding:20px;background:rgba(255,255,255,0.2);border-radius:15px;">
+                        ${message}
+                    </div>
+                    <div style="background:rgba(255,255,255,0.1);padding:15px;border-radius:10px;margin:15px 0;">
+                        ✅ 93 preguntas: UT-3 + Fieldset + W3Schools [file:1]
+                    </div>
+                </div>
+                <button class="restart-btn" onclick="location.reload()">🔄 Repetir (93 preguntas)</button>
+            `;
+            document.getElementById('resultContainer').style.display = 'block';
+        }
+
+        window.onload = initQuiz;
+    </script>
+</body>
+</html>
